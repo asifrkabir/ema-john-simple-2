@@ -1,7 +1,5 @@
-import { getApp, getApps, initializeApp } from "firebase/app";
-// import firebaseConfig from '../../firebase.config';
 import auth from '../../firebase.init';
-import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { signInWithPopup, GoogleAuthProvider, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 
 export const handleGoogleSignIn = () => {
     const provider = new GoogleAuthProvider();
