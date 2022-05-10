@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { getStoredCart, deleteFromDb, clearTheCart } from '../../utilities/fakedb';
+import { getStoredCart, deleteFromDb } from '../../utilities/fakedb';
 import fakeData from '../../fakeData';
 import ReviewItem from '../ReviewItem/ReviewItem';
 import Cart from '../Cart/Cart';
 import happyImage from '../../images/giphy.gif';
+import { useNavigate } from 'react-router-dom';
 
 const Review = () => {
 
@@ -21,12 +22,11 @@ const Review = () => {
     // const first10 = fakeData.slice(0,10);
     // const [products, setProducts] = useState(first10);
     const [cart, setCart] = useState([]);
-    const [orderPlaced, setOrderPlaced] = useState(false);
+    const [orderPlaced] = useState(false);
+    const history = useNavigate();
 
-    const handlePlaceOrder = () => {
-        setOrderPlaced(true);
-        setCart([]);
-        clearTheCart();
+    const handleProceedCheckout = () => {
+        history('/shipment');
     }
 
     const removeProduct = (productKey) => {
@@ -64,7 +64,7 @@ const Review = () => {
             </div>
             <div className="cart-container">
                 <Cart cart={cart}>
-                    <button onClick={handlePlaceOrder} className="main-button">Place Order</button>
+                    <button onClick={handleProceedCheckout} className="main-button">Proceed to checkout</button>
                 </Cart>
             </div>
         </div>
