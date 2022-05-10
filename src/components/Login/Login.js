@@ -1,9 +1,7 @@
-import { initializeApp } from "firebase/app";
-import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
-import firebaseConfig from '../../firebase.config';
-import { useState } from 'react';
-
-initializeApp(firebaseConfig);
+import { useContext, useState } from 'react';
+import { UserContext } from "../../App";
+import { useLocation, useNavigate } from "react-router-dom";
+import { handleGoogleSignIn, handleSignOut } from './LoginManager';
 
 function Login() {
 
@@ -17,78 +15,36 @@ function Login() {
     password: ''
   });
 
-  const provider = new GoogleAuthProvider();
-  const auth = getAuth();
+  const [loggedInUser, setLoggedInUser] = useContext(UserContext);
+  const history = useNavigate();
+  const location = useLocation();
 
-  const handleSignIn = () => {
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        console.log(result);
-        const { displayName, email, photoURL } = result.user;
-        const signedInUser = {
-          isSignedIn: true,
-          name: displayName,
-          email: email,
-          photo: photoURL
-        };
-        setUser(signedInUser);
-      }).catch((error) => {
-        console.log(error);
-        console.log(error.message);
-      });
+  let { from } = location.state || { from: { pathname: "/" } };
+
+  const googleSignIn = () => {
+    handleGoogleSignIn()
+      .then((res) => {
+        setUser(res);
+        setLoggedInUser(res);
+        history(from, { replace: true });
+      })
   }
 
-  const handleSignOut = () => {
-    signOut(auth)
-      .then(() => {
-        const signedOutUser = {
-          isSignedIn: false,
-          name: '',
-          email: '',
-          photo: '',
-          error: '',
-          success: false
-        }
-        setUser(signedOutUser);
-        console.log('signed out');
-      }).catch((error) => {
-        // An error happened.
-      });
+  const signOut = () => {
+    handleSignOut()
+      .then((res) => {
+        setUser(res);
+        setLoggedInUser(res);
+      })
   }
 
   const handleSubmit = (e) => {
     if (newUser && (user.email && user.password)) {
-      createUserWithEmailAndPassword(auth, user.email, user.password)
-        .then((userCredential) => {
-          const newUserInfo = { ...user };
-          newUserInfo.error = '';
-          newUserInfo.success = true;
-          setUser(newUserInfo);
-          updateUserName(user.name);
-        })
-        .catch((error) => {
-          const newUserInfo = { ...user };
-          newUserInfo.error = error.message;
-          newUserInfo.success = false;
-          setUser(newUserInfo);
-        });
+
     }
 
     if (!newUser && (user.email && user.password)) {
-      signInWithEmailAndPassword(auth, user.email, user.password)
-        .then((userCredential) => {
-          const newUserInfo = { ...user };
-          newUserInfo.error = '';
-          newUserInfo.success = true;
-          setUser(newUserInfo);
-          console.log('Signed in user info: ', userCredential.user);
-        })
-        .catch((error) => {
-          const newUserInfo = { ...user };
-          newUserInfo.error = error.message;
-          newUserInfo.success = false;
-          setUser(newUserInfo);
-        });
+
     }
 
     e.preventDefault();
@@ -112,21 +68,13 @@ function Login() {
     }
   }
 
-  const updateUserName = name => {
-    updateProfile(auth.currentUser, {
-      displayName: name
-    }).then(() => {
-      console.log('username updated successfully');
-    }).catch((error) => {
-      console.log(error);
-    });
-  }
+
 
   return (
     <div style={{ textAlign: 'center' }}>
 
       {
-        user.isSignedIn ? <button onClick={handleSignOut}>Sign Out</button> : <button onClick={handleSignIn}>Sign In</button>
+        user.isSignedIn ? <button onClick={signOut}>Sign Out</button> : <button onClick={googleSignIn}>Sign In</button>
       }
       {
         user.isSignedIn &&
