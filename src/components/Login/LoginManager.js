@@ -13,7 +13,8 @@ export const handleGoogleSignIn = () => {
                 isSignedIn: true,
                 name: displayName,
                 email: email,
-                photo: photoURL
+                photo: photoURL,
+                success: true
             };
             return signedInUser;
         }).catch((error) => {
@@ -39,48 +40,45 @@ export const handleSignOut = () => {
         });
 }
 
-// export const newUserWithEmailAndPassword = () => {
-//     createUserWithEmailAndPassword(auth, user.email, user.password)
-//         .then((userCredential) => {
-//             const newUserInfo = { ...user };
-//             newUserInfo.error = '';
-//             newUserInfo.success = true;
-//             setUser(newUserInfo);
-//             updateUserName(user.name);
-//         })
-//         .catch((error) => {
-//             const newUserInfo = { ...user };
-//             newUserInfo.error = error.message;
-//             newUserInfo.success = false;
-//             setUser(newUserInfo);
-//         });
-// }
+export const newUserWithEmailAndPassword = (name, email, password) => {
+    return createUserWithEmailAndPassword(auth, email, password)
+        .then((res) => {
+            const newUserInfo = res.user;
+            newUserInfo.error = '';
+            newUserInfo.success = true;
+            updateUserName(name);
+            return newUserInfo;
+        })
+        .catch((error) => {
+            const newUserInfo = {};
+            newUserInfo.error = error.message;
+            newUserInfo.success = false;
+            return newUserInfo;
+        });
+}
 
-// export const signInUserWithEmailAndPassword = () => {
-//     signInWithEmailAndPassword(auth, user.email, user.password)
-//         .then((userCredential) => {
-//             const newUserInfo = { ...user };
-//             newUserInfo.error = '';
-//             newUserInfo.success = true;
-//             setUser(newUserInfo);
-//             setLoggedInUser(newUserInfo);
-//             history(from, { replace: true });
-//             console.log('Signed in user info: ', userCredential.user);
-//         })
-//         .catch((error) => {
-//             const newUserInfo = { ...user };
-//             newUserInfo.error = error.message;
-//             newUserInfo.success = false;
-//             setUser(newUserInfo);
-//         });
-// }
+export const signInUserWithEmailAndPassword = (email, password) => {
+    return signInWithEmailAndPassword(auth, email, password)
+        .then((res) => {
+            const newUserInfo = res.user;
+            newUserInfo.error = '';
+            newUserInfo.success = true;
+            return newUserInfo;
+        })
+        .catch((error) => {
+            const newUserInfo = {};
+            newUserInfo.error = error.message;
+            newUserInfo.success = false;
+            return newUserInfo;
+        });
+}
 
-// const updateUserName = name => {
-//     updateProfile(auth.currentUser, {
-//         displayName: name
-//     }).then(() => {
-//         console.log('username updated successfully');
-//     }).catch((error) => {
-//         console.log(error);
-//     });
-// }
+const updateUserName = name => {
+    updateProfile(auth.currentUser, {
+        displayName: name
+    }).then(() => {
+        console.log('username updated successfully');
+    }).catch((error) => {
+        console.log(error);
+    });
+}

@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 import { UserContext } from "../../App";
 import { useLocation, useNavigate } from "react-router-dom";
-import { handleGoogleSignIn, handleSignOut } from './LoginManager';
+import { handleGoogleSignIn, handleSignOut, newUserWithEmailAndPassword, signInUserWithEmailAndPassword } from './LoginManager';
 
 function Login() {
 
@@ -24,30 +24,40 @@ function Login() {
   const googleSignIn = () => {
     handleGoogleSignIn()
       .then((res) => {
-        setUser(res);
-        setLoggedInUser(res);
-        history(from, { replace: true });
+        handleResponse(res, true);
       })
   }
 
   const signOut = () => {
     handleSignOut()
       .then((res) => {
-        setUser(res);
-        setLoggedInUser(res);
+        handleResponse(res, false);
       })
   }
 
   const handleSubmit = (e) => {
     if (newUser && (user.email && user.password)) {
-
+      newUserWithEmailAndPassword(user.name, user.email, user.password)
+        .then((res) => {
+          handleResponse(res, true);
+        })
     }
 
     if (!newUser && (user.email && user.password)) {
-
+      signInUserWithEmailAndPassword(user.email, user.password)
+        .then((res) => {
+          handleResponse(res, true);
+        })
     }
-
     e.preventDefault();
+  }
+
+  const handleResponse = (res, redirect) => {
+    setUser(res);
+    setLoggedInUser(res);
+    if (redirect) {
+      history(from, { replace: true });
+    }
   }
 
   const handleBlur = (e) => {
