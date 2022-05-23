@@ -3,42 +3,31 @@ import { addToDb, getStoredCart } from '../../utilities/fakedb';
 import Cart from '../Cart/Cart';
 import Product from '../Product/Product';
 import './Shop.css';
-import fakeData from '../../fakeData';
 import { Link } from 'react-router-dom';
 
 const Shop = () => {
 
-    // useEffect(() => {
-    //     fetch('https://raw.githubusercontent.com/ProgrammingHero1/ema-john-simple-resources/master/fakeData/products.JSON')
-    //         .then(res => res.json())
-    //         .then(data => processData(data))
-    // }, [])
-
-    // const processData = (fakeData) => {
-    //     const first10 = fakeData.slice(0, 10);
-    //     setProducts(first10);
-    // }
-
-    const first10 = fakeData.slice(0, 10);
-    const [products, setProducts] = useState(first10);
+    const [products, setProducts] = useState([]);
     const [cart, setCart] = useState([]);
 
-    // const handleAddProduct = (product) => {
-    //     const newCart = [...cart, product];
-    //     setCart(newCart);
-    //     addToDb(product.key);
-    // }
+    useEffect(() => {
+        fetch('http://localhost:5000/products')
+        .then(res => res.json())
+        .then(data => setProducts(data));
+    }, [])
 
     useEffect(() => {
         const savedCart = getStoredCart();
         const productKeys = Object.keys(savedCart);
-        const previousCart = productKeys.map(existingKey => {
-            const product = fakeData.find(pd => pd.key === existingKey);
-            product.quantity = savedCart[existingKey];
-            return product;
-        })
-        setCart(previousCart);
-    }, [])
+        if (products.length > 0) {
+            const previousCart = productKeys.map(existingKey => {
+                const product = products.find(pd => pd.key === existingKey);
+                product.quantity = savedCart[existingKey];
+                return product;
+            })
+            setCart(previousCart);
+        }
+    }, [products])
 
     const handleAddProduct = (product) => {
         const toBeAddedKey = product.key;

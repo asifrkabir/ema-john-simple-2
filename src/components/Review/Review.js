@@ -8,19 +8,6 @@ import { useNavigate } from 'react-router-dom';
 
 const Review = () => {
 
-    // useEffect(() => {
-    //     fetch('https://raw.githubusercontent.com/ProgrammingHero1/ema-john-simple-resources/master/fakeData/products.JSON')
-    //         .then(res => res.json())
-    //         .then(data => processData(data))
-
-    //     const processData = (fakeData) => {
-    //         const first10 = fakeData.slice(0, 10);
-    //         setProducts(first10);
-    //     }
-    // }, [])
-
-    // const first10 = fakeData.slice(0,10);
-    // const [products, setProducts] = useState(first10);
     const [cart, setCart] = useState([]);
     const [orderPlaced] = useState(false);
     const history = useNavigate();
