@@ -29,14 +29,12 @@ function App() {
         {/* <Route path="/inventory" element={<Inventory></Inventory>}></Route>
         <Route path="/shipment" element={<Shipment></Shipment>}></Route> */}
 
-        {/* <Route path='/inventory' element={
+        <Route path='/inventory' element={
           <PrivateRoute>
             <Inventory></Inventory>
           </PrivateRoute>
         }>
-        </Route> */}
-
-        <Route path='/inventory' element={<Inventory></Inventory>}></Route>
+        </Route>
 
         <Route path="/shipment" element={
           <PrivateRoute>
